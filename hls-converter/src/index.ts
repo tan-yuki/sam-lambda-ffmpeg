@@ -40,7 +40,16 @@ export const handler: SQSHandler = async (
     try {
       const s3Keys = await listOriginalS3Keys(s3, bucket, path);
 
+      if (s3Keys.length === 0) {
+        console.error(`Not found S3 keys. Path: ${path}`);
+        return;
+      }
+
       const m3u8FileName = findM3U8FileNameFromKeys(s3Keys);
+      if (!m3u8FileName) {
+        console.error(`Not found m3u8 file. Path: ${path}`);
+        return;
+      }
 
       await downloadOriginalFiles(s3, bucket, s3Keys, localTmpDirecotry);
       await convertM3U8File(
