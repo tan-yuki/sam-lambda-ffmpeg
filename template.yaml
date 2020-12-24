@@ -11,20 +11,20 @@ Globals:
     Timeout: 3
 
 Resources:
-  HelloWorldFunction:
+  HlsConverterFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: hello-world/
+      CodeUri: hls-converter/
       Handler: index.handler
       Runtime: nodejs12.x
       Events:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt HelloWorldSQS.Arn
+            Queue: !GetAtt HlsConverterSQS.Arn
             BatchSize: 10
-      Role: !GetAtt HelloWorldFunctionRole.Arn
-  HelloWorldFunctionRole:
+      Role: !GetAtt HlsConverterFunctionRole.Arn
+  HlsConverterFunctionRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -40,17 +40,17 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole
         - arn:aws:iam::aws:policy/AWSStepFunctionsReadOnlyAccess
-  HelloWorldSQS:
+  HlsConverterSQS:
     Type: AWS::SQS::Queue
-  HelloWorldSQSPolicy:
+  HlsConverterSQSPolicy:
     Type: AWS::SQS::QueuePolicy
     Properties:
       PolicyDocument:
-        Id: !Ref HelloWorldSQS
+        Id: !Ref HlsConverterSQS
         Statement:
           - Effect: Allow
             Principal: "*"
             Action: "SQS:*"
-            Resource: !GetAtt HelloWorldSQS.Arn
+            Resource: !GetAtt HlsConverterSQS.Arn
       Queues:
-        - !Ref HelloWorldSQS
+        - !Ref HlsConverterSQS
